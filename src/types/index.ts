@@ -13,7 +13,7 @@ export interface SearchItem {
 
 export interface SearchFilters {
   query: string;
-  category?: string;
+  category?: string[];
   tags: string[];
   priceRange?: {
     min: number;

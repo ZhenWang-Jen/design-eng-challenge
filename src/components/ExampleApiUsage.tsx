@@ -24,7 +24,7 @@ export default function ExampleApiUsage() {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg border border-gray-200">
+    <div className="w-full max-w-4xl mx-auto bg-gray-50 border border-gray-200 rounded-xl shadow p-6 mb-8">
       <h3 className="text-lg font-semibold mb-4">API Usage Example</h3>
       
       <button
@@ -50,6 +50,10 @@ export default function ExampleApiUsage() {
           </div>
         </div>
       )}
+
+      <input
+        className="w-full border border-gray-300 bg-gray-50 rounded px-4 py-2 text-gray-800 placeholder-gray-500"
+      />
     </div>
   );
 } 
