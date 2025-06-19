@@ -188,14 +188,6 @@ const SearchBar: React.FC = () => {
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 my-8 p-8" role="search">
-      {/* Keyboard shortcuts tooltip */}
-      <div className="absolute top-2 right-2 text-xs text-gray-500" role="complementary" aria-label="Keyboard shortcuts">
-        {keyboardShortcuts.map(({ key, action }) => (
-          <span key={key} className="mr-2">
-            <kbd className="px-1 py-0.5 bg-gray-100 rounded">{key}</kbd> {action}
-          </span>
-        ))}
-      </div>
       {/* Saved Drawer/Modal */}
       {showSaved && (
         <div 
@@ -250,6 +242,14 @@ const SearchBar: React.FC = () => {
           </div>
         </div>
       )}
+      {/* Keyboard shortcuts tooltip */}
+      <div className="mb-4 text-xs text-gray-500" role="complementary" aria-label="Keyboard shortcuts">
+        {keyboardShortcuts.map(({ key, action }) => (
+          <span key={key} className="mr-2">
+            <kbd className="px-1 py-0.5 bg-gray-100 rounded">{key}</kbd> {action}
+          </span>
+        ))}
+      </div>
       {/* Search Input */}
       <div className="relative mb-4">
         <label htmlFor="search-input" className="sr-only">Search products</label>
