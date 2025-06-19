@@ -52,7 +52,7 @@ const ResultsGrid: React.FC<ResultsGridProps> = ({ products, loading, error, onS
               >
                 {/* Front Side */}
                 <div
-                  className="absolute inset-0 w-full h-full bg-white rounded-xl shadow p-4 flex flex-col items-center"
+                  className="absolute inset-0 w-full h-full p-4 flex flex-col items-center"
                   style={{
                     backfaceVisibility: 'hidden',
                     WebkitBackfaceVisibility: 'hidden',

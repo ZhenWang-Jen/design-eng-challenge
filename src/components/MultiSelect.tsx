@@ -8,9 +8,10 @@ type MultiSelectProps = {
   selected: string[];
   onChange: (selected: string[]) => void;
   placeholder?: string;
+  className?: string;
 };
 
-const MultiSelect: React.FC<MultiSelectProps> = ({ options, selected, onChange, placeholder }) => {
+const MultiSelect: React.FC<MultiSelectProps> = ({ options, selected, onChange, placeholder, className }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -38,7 +39,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({ options, selected, onChange, 
   };
 
   return (
-    <div className="relative min-w-[200px]" ref={ref}>
+    <div className={`relative min-w-[200px] ${className || ''}`} ref={ref}>
       <div
         className="flex flex-wrap items-center gap-1 border rounded px-2 py-1 bg-white cursor-pointer min-h-[38px]"
         onClick={() => setOpen((o) => !o)}

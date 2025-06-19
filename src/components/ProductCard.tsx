@@ -20,7 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, hideActions = false 
         <div className="w-32 h-32 bg-gray-200 rounded mb-3" />
       )}
       {/* Product title */}
-      <div className="font-semibold text-center mb-1 text-base line-clamp-2 min-h-[2.5em]">{product.title}</div>
+      <div className="font-semibold text-center text-gray-800 mb-1 text-base line-clamp-2 min-h-[2.5em]">{product.title}</div>
       {/* Product price */}
       {product.price !== undefined && (
         <div className="text-blue-600 font-bold mb-1 text-lg">${product.price.toFixed(2)}</div>

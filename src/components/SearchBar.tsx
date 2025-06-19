@@ -162,7 +162,7 @@ const SearchBar: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 my-8 p-8">
       {/* Saved Drawer/Modal */}
       {showSaved && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
@@ -212,21 +212,21 @@ const SearchBar: React.FC = () => {
         </div>
       )}
       {/* Search Input */}
-      <div className="mb-4">
+      <div className="mb-4 relative">
         <input
           type="text"
-          className="w-full border rounded px-4 py-2"
+          className="w-full border rounded px-4 py-2 text-gray-800 placeholder-gray-600"
           placeholder="Search products..."
           value={filters.query}
           onChange={handleInputChange}
         />
         {/* Autocomplete suggestions */}
         {suggestions.length > 0 && filters.query && (
-          <ul className="bg-white border rounded shadow mt-1 absolute z-10 w-full">
+          <ul className="absolute left-0 right-0 w-full bg-white border border-gray-200 rounded shadow z-50 max-h-60 overflow-y-auto mt-1">
             {suggestions.map((s, i) => (
               <li
                 key={i}
-                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                className="px-4 py-2 text-gray-800 font-medium hover:bg-gray-100 cursor-pointer truncate"
                 onClick={() => setFilters((prev) => ({ ...prev, query: s }))}
               >
                 {s}
@@ -288,14 +288,14 @@ const SearchBar: React.FC = () => {
             onClick={() => setViewMode('card')}
             aria-pressed={viewMode === 'card'}
           >
-            Card View
+            Meet Your Match
           </button>
           <button
             className={`px-4 py-1 rounded-full font-semibold transition-colors duration-200 ${viewMode === 'grid' ? 'bg-blue-600 text-white shadow' : 'text-gray-700'}`}
             onClick={() => setViewMode('grid')}
             aria-pressed={viewMode === 'grid'}
           >
-            Grid View
+            See the Crowd
           </button>
         </div>
         <button

@@ -24,31 +24,32 @@ const Filters: React.FC<FiltersProps> = ({ filters, facets, onChange, onReset })
     <div className="flex flex-wrap gap-4 mb-4 items-end w-full">
       {/* Category filter custom multi-select */}
       <div>
-        <label className="block text-xs font-medium mb-1">Category</label>
+        <label className="block text-xs mb-1 font-semibold text-gray-800">Category</label>
         <MultiSelect
           options={facets?.categories.map(cat => ({ value: cat.name, label: `${cat.name} (${cat.count})` })) || []}
           selected={filters.category || []}
           onChange={catArr => onChange({ category: catArr })}
           placeholder="Select categories"
+          className="text-gray-800 placeholder-gray-600 border-gray-300"
         />
       </div>
       {/* Price range slider */}
       <div>
-        <label className="block text-xs font-medium mb-1">Price Range</label>
+        <label className="block text-xs mb-1 font-semibold text-gray-800">Price Range ($)</label>
         <div className="flex gap-2 items-center">
           <input
             type="number"
-            className="border rounded px-2 py-1 w-20"
+            className="border border-gray-300 rounded px-2 py-1 w-20 text-gray-800 placeholder-gray-600"
             placeholder="Min"
             min={facets?.priceRange.min}
             max={facets?.priceRange.max}
             value={filters.priceRange?.min ?? (facets?.priceRange ? facets.priceRange.min : '')}
             onChange={e => onChange({ priceRange: { min: Number(e.target.value) || (facets?.priceRange ? facets.priceRange.min : 0), max: filters.priceRange?.max ?? (facets?.priceRange ? facets.priceRange.max : 0) } })}
           />
-          <span>-</span>
+          <span className="block text-xs mb-1 font-semibold text-gray-800">-</span>
           <input
             type="number"
-            className="border rounded px-2 py-1 w-20"
+            className="border border-gray-300 rounded px-2 py-1 w-20 text-gray-800 placeholder-gray-600"
             placeholder="Max"
             min={facets?.priceRange.min}
             max={facets?.priceRange.max}
@@ -59,9 +60,9 @@ const Filters: React.FC<FiltersProps> = ({ filters, facets, onChange, onReset })
       </div>
       {/* Sort options dropdown */}
       <div>
-        <label className="block text-xs font-medium mb-1">Sort By</label>
+        <label className="block text-xs mb-1 font-semibold text-gray-800">Sort By</label>
         <select
-          className="border rounded px-2 py-1"
+          className="border border-gray-300 rounded px-2 py-1 text-gray-800 placeholder-gray-600"
           value={filters.sortBy}
           onChange={e => onChange({ sortBy: e.target.value as SearchFilters['sortBy'] })}
         >
