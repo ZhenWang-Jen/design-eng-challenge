@@ -1,23 +1,15 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// Mock data for demo
-const mockResults = [
-  { type: 'product', label: 'Premium Wireless Headphones' },
-  { type: 'product', label: 'Wireless Mouse' },
-  { type: 'action', label: 'Show only Electronics' },
-  { type: 'action', label: 'Sort by Price: Low to High' },
-  { type: 'category', label: 'Jump to: Audio' },
-];
-
-type Result = typeof mockResults[number];
+import { SearchItem } from '@/types';
 
 const CommandPalette: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [results, setResults] = useState<SearchItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // Keyboard shortcut: / or Cmd+K
   useEffect(() => {
@@ -40,7 +32,27 @@ const CommandPalette: React.FC = () => {
   }, [open]);
 
   // Keyboard navigation
-  const results = mockResults.filter(r => r.label.toLowerCase().includes(query.toLowerCase()));
+  useEffect(() => {
+    if (!query) {
+      setResults([]);
+      return;
+    }
+    const timeout = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        setResults(data.items || []);
+      } catch (e) {
+        setResults([]);
+        throw e;
+      } finally {
+        setLoading(false);
+      }
+    }, 300); // debounce
+    return () => clearTimeout(timeout);
+  }, [query]);
+
   useEffect(() => { setSelected(0); }, [query, open]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -80,13 +92,14 @@ const CommandPalette: React.FC = () => {
               onChange={e => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
             />
+            {loading && <div className="text-xs text-gray-500">Loading...</div>}
             <div className="max-h-72 overflow-y-auto">
               {results.length === 0 && (
                 <div className="text-gray-400 px-4 py-6 text-center">No results</div>
               )}
               {results.map((r, i) => (
                 <motion.div
-                  key={r.label}
+                  key={r.id}
                   className={`flex items-center gap-3 px-4 py-2 rounded-lg cursor-pointer mb-1 ${i === selected ? 'bg-blue-100' : 'hover:bg-gray-100'}`}
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -95,10 +108,7 @@ const CommandPalette: React.FC = () => {
                   onMouseEnter={() => setSelected(i)}
                   onClick={() => setOpen(false)}
                 >
-                  {r.type === 'product' && <span className="text-blue-500">📦</span>}
-                  {r.type === 'action' && <span className="text-green-500">⚡</span>}
-                  {r.type === 'category' && <span className="text-purple-500">🏷️</span>}
-                  <span className="flex-1 text-gray-800 font-medium">{r.label}</span>
+                  <span className="flex-1 text-gray-800 font-medium">{r.title}</span>
                 </motion.div>
               ))}
             </div>

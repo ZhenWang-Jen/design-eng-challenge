@@ -2,7 +2,6 @@ import ProductCard from './ProductCard';
 import React, { useState } from 'react';
 import { SearchItem } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Heart as HeartFilled, Info } from 'lucide-react';
 
 type ResultsGridProps = {
   products: SearchItem[];

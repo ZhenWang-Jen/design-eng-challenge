@@ -33,10 +33,7 @@ const SearchBar: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [liked, setLiked] = useState<SearchItem[]>([]);
-  const [skipped, setSkipped] = useState<SearchItem[]>([]);
   const [saved, setSaved] = useState<SearchItem[]>([]);
   const [showSaved, setShowSaved] = useState(false);
   const [viewMode, setViewMode] = useState<'card' | 'grid'>('card');
@@ -86,13 +83,16 @@ const SearchBar: React.FC = () => {
       setResults(data.items);
       setFacets(data.facets);
       setSuggestions(data.suggestions);
-      setTotal(data.total);
-    } catch (e: any) {
-      setError(e.message || "Unknown error");
+    } catch (e) {
+      if (e instanceof Error) {
+        setError(e.message);
+      } else {
+        setError("Unknown error");
+      }
     } finally {
       setLoading(false);
     }
-  }, [debouncedFilters, page]);
+  }, [debouncedFilters, page, facets]);
 
   useEffect(() => {
     fetchData();
@@ -106,8 +106,6 @@ const SearchBar: React.FC = () => {
   // Reset index when results change
   useEffect(() => {
     setCurrentIdx(0);
-    setLiked([]);
-    setSkipped([]);
   }, [results]);
 
   // Handlers
@@ -119,7 +117,7 @@ const SearchBar: React.FC = () => {
     setFilters((prev) => ({ ...prev, ...updated }));
   };
 
-  const handleRemoveFilter = (key: keyof SearchFilters, value?: any) => {
+  const handleRemoveFilter = (key: keyof SearchFilters, value?: string) => {
     setFilters((prev) => {
       if (key === "tags" && value) {
         return { ...prev, tags: prev.tags.filter((t) => t !== value) };
@@ -141,18 +139,17 @@ const SearchBar: React.FC = () => {
   };
 
   // Handlers for swipe actions
-  const handleLike = () => {
-    if (results[currentIdx]) setLiked((prev) => [...prev, results[currentIdx]]);
-    // Save to saved list if not already present
-    if (results[currentIdx] && !saved.some(item => item.id === results[currentIdx].id)) {
-      setSaved(prev => [...prev, results[currentIdx]]);
-    }
+  const handleLike = useCallback(() => {
+    if (results[currentIdx]) setSaved((prev) => [...prev, results[currentIdx]]);
     setCurrentIdx((idx) => idx + 1);
-  };
+  }, [results, currentIdx]);
 
-  const handleSkip = () => {
-    if (results[currentIdx]) setSkipped((prev) => [...prev, results[currentIdx]]);
+  const handleSkip = useCallback(() => {
     setCurrentIdx((idx) => idx + 1);
+  }, [setCurrentIdx]);
+
+  const handleRemoveSaved = (id: string) => {
+    setSaved(prev => prev.filter(item => item.id !== id));
   };
 
   // Add keyboard shortcuts
@@ -403,7 +400,7 @@ const SearchBar: React.FC = () => {
           products={results}
           loading={loading}
           error={error}
-          onSave={item => {
+          onSave={(item: SearchItem) => {
             if (!saved.some(s => s.id === item.id)) setSaved(prev => [...prev, item]);
           }}
           saved={saved.map(s => s.id)}

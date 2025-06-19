@@ -82,7 +82,7 @@ export async function GET(request: NextRequest) {
   ];
 
   // Filter items based on search criteria
-  let filteredItems = mockItems.filter(item => {
+  const filteredItems = mockItems.filter(item => {
     const matchesQuery = !query || 
       item.title.toLowerCase().includes(query.toLowerCase()) ||
       item.description.toLowerCase().includes(query.toLowerCase()) ||

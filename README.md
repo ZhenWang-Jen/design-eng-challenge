@@ -25,6 +25,7 @@ I've implemented a modern, engaging product search interface that balances infor
 - **Saved Products**: Persistent storage of liked items
 - **Smooth Animations**: Framer Motion-powered transitions and micro-interactions
 - **Responsive Design**: Works seamlessly across all device sizes
+- **CommandPalette**: Quick Search & Actions, a power-user feature inspired by tools like Spotlight (macOS) and VSCode's Command Palette
 
 ### Addressing Key Questions
 

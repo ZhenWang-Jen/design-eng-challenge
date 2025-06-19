@@ -2,6 +2,7 @@ import React from 'react';
 import { SearchItem } from '@/types';
 import { motion } from 'framer-motion';
 import { Heart, Heart as HeartFilled, Info } from 'lucide-react';
+import Image from 'next/image';
 
 type ProductCardProps = {
   product: SearchItem;
@@ -49,16 +50,17 @@ const ProductCard: React.FC<ProductCardProps> = ({
           aria-label="Product details"
         >
           {product.imageUrl ? (
-            <img
+            <Image
               src={product.imageUrl}
               alt={product.title}
-              className="w-full h-48 object-cover rounded-lg mb-4"
+              width={320}
+              height={160}
+              className="w-full h-40 object-cover rounded-t-lg"
             />
           ) : (
-            <div 
-              className="w-full h-48 bg-gray-100 rounded-lg mb-4 animate-pulse" 
-              aria-hidden="true"
-            />
+            <div className="w-full h-40 bg-gray-200 rounded-t-lg flex items-center justify-center text-gray-400" aria-hidden="true">
+              No Image
+            </div>
           )}
           <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
             {product.title}
