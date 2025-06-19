@@ -140,9 +140,11 @@ const SearchBar: React.FC = () => {
 
   // Handlers for swipe actions
   const handleLike = useCallback(() => {
-    if (results[currentIdx]) setSaved((prev) => [...prev, results[currentIdx]]);
+    if (results[currentIdx] && !saved.some(item => item.id === results[currentIdx].id)) {
+      setSaved((prev) => [...prev, results[currentIdx]]);
+    }
     setCurrentIdx((idx) => idx + 1);
-  }, [results, currentIdx]);
+  }, [results, currentIdx, saved]);
 
   const handleSkip = useCallback(() => {
     setCurrentIdx((idx) => idx + 1);
@@ -401,7 +403,11 @@ const SearchBar: React.FC = () => {
           loading={loading}
           error={error}
           onSave={(item: SearchItem) => {
-            if (!saved.some(s => s.id === item.id)) setSaved(prev => [...prev, item]);
+            if (saved.some(s => s.id === item.id)) {
+              setSaved(prev => prev.filter(s => s.id !== item.id));
+            } else {
+              setSaved(prev => [...prev, item]);
+            }
           }}
           saved={saved.map(s => s.id)}
         />
