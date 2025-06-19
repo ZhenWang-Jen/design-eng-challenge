@@ -92,7 +92,7 @@ const SearchBar: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [debouncedFilters, page, facets]);
+  }, [debouncedFilters, page]);
 
   useEffect(() => {
     fetchData();
