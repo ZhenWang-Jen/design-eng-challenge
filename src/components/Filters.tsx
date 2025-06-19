@@ -103,9 +103,9 @@ const Filters: React.FC<FiltersProps> = ({ filters, facets, onChange, onReset })
           >
             {/* Tag filter multi-select */}
             <div>
-              <label className="block text-xs font-medium mb-1">Tags</label>
+              <label className="block text-xs mb-1 font-semibold text-gray-800">Tags</label>
               <select
-                className="border rounded px-2 py-1"
+                className="border rounded px-2 py-1 text-gray-800 placeholder-gray-600"
                 multiple
                 value={filters.tags}
                 onChange={e => {
@@ -127,7 +127,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, facets, onChange, onReset })
                 checked={!!filters.featured}
                 onChange={e => onChange({ featured: e.target.checked ? true : undefined })}
               />
-              <label htmlFor="featured" className="text-xs">Featured</label>
+              <label htmlFor="featured" className="text-xs text-gray-800">Featured</label>
             </div>
           </motion.div>
         )}

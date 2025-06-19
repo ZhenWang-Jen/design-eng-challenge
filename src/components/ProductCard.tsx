@@ -1,44 +1,131 @@
 import React from 'react';
 import { SearchItem } from '@/types';
+import { motion } from 'framer-motion';
+import { Heart, Heart as HeartFilled, Info } from 'lucide-react';
 
 type ProductCardProps = {
   product: SearchItem;
-  hideActions?: boolean;
+  isFlipped: boolean;
+  onFlip: () => void;
+  onSave: () => void;
+  isSaved: boolean;
+  dummyInfo: {
+    fact: string;
+    review: string;
+    url: string;
+  };
 };
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, hideActions = false }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  isFlipped,
+  onFlip,
+  onSave,
+  isSaved,
+  dummyInfo
+}) => {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 flex flex-col items-center transition-transform duration-200 hover:scale-105 hover:shadow-lg relative group">
-      {/* Featured badge */}
-      {product.featured && (
-        <span className="absolute top-2 right-2 bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full font-semibold shadow group-hover:scale-110 transition-transform">Featured</span>
-      )}
-      {/* Product image */}
-      {product.imageUrl ? (
-        <img src={product.imageUrl} alt={product.title} className="w-32 h-32 object-cover rounded mb-3" />
-      ) : (
-        <div className="w-32 h-32 bg-gray-200 rounded mb-3" />
-      )}
-      {/* Product title */}
-      <div className="font-semibold text-center text-gray-800 mb-1 text-base line-clamp-2 min-h-[2.5em]">{product.title}</div>
-      {/* Product price */}
-      {product.price !== undefined && (
-        <div className="text-blue-600 font-bold mb-1 text-lg">${product.price.toFixed(2)}</div>
-      )}
-      {/* Product tags */}
-      <div className="flex flex-wrap gap-1 mb-2 justify-center">
-        {product.tags.map(tag => (
-          <span key={tag} className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">{tag}</span>
-        ))}
-      </div>
-      {/* Product rating */}
-      {product.rating !== undefined && (
-        <div className="text-yellow-500 text-sm">★ {product.rating}</div>
-      )}
-      {/* Hide actions in grid if requested */}
-      {!hideActions && (
-        <div className="mt-2">{/* Placeholder for future actions */}</div>
-      )}
+    <div className="relative" style={{ perspective: 1200, minHeight: 380 }}>
+      <motion.div
+        className="relative w-full"
+        style={{ height: 360, transformStyle: 'preserve-3d' }}
+        animate={{ rotateY: isFlipped ? 180 : 0 }}
+        transition={{ duration: 0.6, ease: [0.4, 0.2, 0.2, 1] }}
+      >
+        {/* Front Side */}
+        <div
+          className="absolute inset-0 w-full h-full bg-white rounded-xl shadow-sm p-4 flex flex-col"
+          style={{
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            transform: 'rotateY(0deg)',
+          }}
+        >
+          {product.imageUrl ? (
+            <img
+              src={product.imageUrl}
+              alt={product.title}
+              className="w-full h-48 object-cover rounded-lg mb-4"
+            />
+          ) : (
+            <div className="w-full h-48 bg-gray-100 rounded-lg mb-4 animate-pulse" />
+          )}
+          <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
+            {product.title}
+          </h3>
+          <p className="text-gray-600 text-sm mb-2 line-clamp-2">
+            {product.description}
+          </p>
+          <div className="flex items-center justify-between mt-auto">
+            <span className="text-lg font-bold text-blue-600">
+              ${product.price?.toFixed(2) ?? 'N/A'}
+            </span>
+            <div className="flex gap-2">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className={`rounded-full p-2 ${
+                  isSaved
+                    ? 'bg-red-500 text-white'
+                    : 'bg-red-100 text-red-600 hover:bg-red-200'
+                }`}
+                onClick={onSave}
+                aria-label="Save"
+              >
+                {isSaved ? (
+                  <HeartFilled fill="currentColor" size={20} />
+                ) : (
+                  <Heart size={20} />
+                )}
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="rounded-full p-2 bg-gray-100 text-gray-600 hover:bg-gray-200"
+                onClick={onFlip}
+                aria-label="Details"
+              >
+                <Info size={20} />
+              </motion.button>
+            </div>
+          </div>
+        </div>
+
+        {/* Back Side */}
+        <div
+          className="absolute inset-0 w-full h-full bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl shadow p-4 flex flex-col"
+          style={{
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            transform: 'rotateY(180deg)',
+          }}
+        >
+          <div className="font-bold text-lg mb-4 text-center text-gray-800">
+            Discover More
+          </div>
+          <div className="text-blue-900 text-center mb-4 italic">
+            {dummyInfo.fact}
+          </div>
+          <div className="text-gray-700 text-center mb-4">{dummyInfo.review}</div>
+          <a
+            href={dummyInfo.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600 transition text-center"
+          >
+            Read more about this product
+          </a>
+          <div className="flex-1" />
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="mt-4 px-4 py-2 rounded bg-blue-100 text-blue-700 hover:bg-blue-200"
+            onClick={onFlip}
+          >
+            Back
+          </motion.button>
+        </div>
+      </motion.div>
     </div>
   );
 };

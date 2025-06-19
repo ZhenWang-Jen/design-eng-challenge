@@ -60,7 +60,7 @@ const SwipeableProductCard: React.FC<SwipeableProductCardProps> = ({ product, on
           >
             {/* Front Side */}
             <div
-              className="absolute inset-0 bg-white rounded-xl shadow-lg p-6 flex flex-col items-center"
+              className="absolute inset-0 bg-white rounded-xl border border-gray-200 shadow-lg p-6 flex flex-col items-center"
               style={{
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden',

@@ -149,20 +149,53 @@ const SearchBar: React.FC = () => {
     }
     setCurrentIdx((idx) => idx + 1);
   };
+
   const handleSkip = () => {
     if (results[currentIdx]) setSkipped((prev) => [...prev, results[currentIdx]]);
     setCurrentIdx((idx) => idx + 1);
   };
-  const handleDetails = () => {
-    // Optionally show a modal or more info
-    alert(results[currentIdx]?.description || 'No details');
-  };
-  const handleRemoveSaved = (id: string) => {
-    setSaved(prev => prev.filter(item => item.id !== id));
-  };
+
+  // Add keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      // Alt + L to like, Alt + S to skip
+      if (e.altKey) {
+        if (e.key.toLowerCase() === 'l') {
+          e.preventDefault();
+          handleLike();
+        } else if (e.key.toLowerCase() === 's') {
+          e.preventDefault();
+          handleSkip();
+        }
+      }
+      // Alt + V to toggle view mode
+      if (e.altKey && e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+        setViewMode(prev => prev === 'card' ? 'grid' : 'card');
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [handleLike, handleSkip]);
+
+  // Add tooltips for keyboard shortcuts
+  const keyboardShortcuts = [
+    { key: 'Alt + L', action: 'Like' },
+    { key: 'Alt + S', action: 'Skip' },
+    { key: 'Alt + V', action: 'Toggle View' },
+    { key: '/', action: 'Command Palette' }
+  ];
 
   return (
     <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 my-8 p-8">
+      {/* Keyboard shortcuts tooltip */}
+      <div className="absolute top-2 right-2 text-xs text-gray-500">
+        {keyboardShortcuts.map(({ key, action }) => (
+          <span key={key} className="mr-2">
+            <kbd className="px-1 py-0.5 bg-gray-100 rounded">{key}</kbd> {action}
+          </span>
+        ))}
+      </div>
       {/* Saved Drawer/Modal */}
       {showSaved && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
