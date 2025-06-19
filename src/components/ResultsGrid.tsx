@@ -25,7 +25,11 @@ const ResultsGrid: React.FC<ResultsGridProps> = ({ products, loading, error, onS
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <div 
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+        role="status"
+        aria-label="Loading products"
+      >
         {[...Array(6)].map((_, i) => (
           <motion.div
             key={i}
@@ -33,6 +37,7 @@ const ResultsGrid: React.FC<ResultsGridProps> = ({ products, loading, error, onS
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: i * 0.1 }}
+            aria-hidden="true"
           />
         ))}
       </div>
@@ -45,6 +50,8 @@ const ResultsGrid: React.FC<ResultsGridProps> = ({ products, loading, error, onS
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center py-8 text-red-500 bg-red-50 rounded-lg"
+        role="alert"
+        aria-live="assertive"
       >
         {error}
       </motion.div>
@@ -57,6 +64,8 @@ const ResultsGrid: React.FC<ResultsGridProps> = ({ products, loading, error, onS
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-center py-8 text-gray-400 bg-gray-50 rounded-lg"
+        role="status"
+        aria-live="polite"
       >
         No results found. Try adjusting your filters.
       </motion.div>
@@ -67,6 +76,8 @@ const ResultsGrid: React.FC<ResultsGridProps> = ({ products, loading, error, onS
     <motion.div
       layout
       className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+      role="list"
+      aria-label="Product grid"
     >
       <AnimatePresence mode="popLayout">
         {products.map((product, index) => {
@@ -86,6 +97,7 @@ const ResultsGrid: React.FC<ResultsGridProps> = ({ products, loading, error, onS
                 delay: index * 0.05
               }}
               className="relative"
+              role="listitem"
             >
               <ProductCard
                 product={product}

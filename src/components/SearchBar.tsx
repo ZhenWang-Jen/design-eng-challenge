@@ -187,9 +187,9 @@ const SearchBar: React.FC = () => {
   ];
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 my-8 p-8">
+    <div className="w-full bg-white rounded-lg shadow-sm border border-gray-200 my-8 p-8" role="search">
       {/* Keyboard shortcuts tooltip */}
-      <div className="absolute top-2 right-2 text-xs text-gray-500">
+      <div className="absolute top-2 right-2 text-xs text-gray-500" role="complementary" aria-label="Keyboard shortcuts">
         {keyboardShortcuts.map(({ key, action }) => (
           <span key={key} className="mr-2">
             <kbd className="px-1 py-0.5 bg-gray-100 rounded">{key}</kbd> {action}
@@ -198,26 +198,31 @@ const SearchBar: React.FC = () => {
       </div>
       {/* Saved Drawer/Modal */}
       {showSaved && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="saved-products-title"
+        >
           <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md relative">
             <button
               className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
               onClick={() => setShowSaved(false)}
-              aria-label="Close"
+              aria-label="Close saved products"
             >
               <X size={24} />
             </button>
-            <h2 className="text-xl font-bold mb-4 text-center">Saved Products</h2>
+            <h2 id="saved-products-title" className="text-xl font-bold mb-4 text-center">Saved Products</h2>
             {saved.length === 0 ? (
-              <div className="text-gray-500 text-center">No saved products yet.</div>
+              <div className="text-gray-500 text-center" role="status">No saved products yet.</div>
             ) : (
-              <ul className="space-y-4 max-h-96 overflow-y-auto">
+              <ul className="space-y-4 max-h-96 overflow-y-auto" role="list">
                 {saved.map(item => (
                   <li key={item.id} className="flex items-center gap-4 border-b pb-2">
                     {item.imageUrl ? (
                       <img src={item.imageUrl} alt={item.title} className="w-14 h-14 object-cover rounded" />
                     ) : (
-                      <div className="w-14 h-14 bg-gray-200 rounded" />
+                      <div className="w-14 h-14 bg-gray-200 rounded" aria-hidden="true" />
                     )}
                     <div className="flex-1">
                       <div className="font-semibold text-gray-800 line-clamp-1">{item.title}</div>
@@ -226,6 +231,7 @@ const SearchBar: React.FC = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-600 text-xs hover:underline"
+                        aria-label={`View more about ${item.title}`}
                       >
                         View more
                       </a>
@@ -233,7 +239,7 @@ const SearchBar: React.FC = () => {
                     <button
                       className="ml-2 text-red-400 hover:text-red-600"
                       onClick={() => handleRemoveSaved(item.id)}
-                      aria-label="Remove"
+                      aria-label={`Remove ${item.title} from saved items`}
                     >
                       <X size={18} />
                     </button>
@@ -245,22 +251,34 @@ const SearchBar: React.FC = () => {
         </div>
       )}
       {/* Search Input */}
-      <div className="mb-4 relative">
+      <div className="relative mb-4">
+        <label htmlFor="search-input" className="sr-only">Search products</label>
         <input
+          id="search-input"
           type="text"
           className="w-full border rounded px-4 py-2 text-gray-800 placeholder-gray-600"
           placeholder="Search products..."
           value={filters.query}
           onChange={handleInputChange}
+          aria-label="Search products"
+          aria-expanded={suggestions.length > 0}
+          aria-controls="search-suggestions"
+          aria-autocomplete="list"
         />
         {/* Autocomplete suggestions */}
         {suggestions.length > 0 && filters.query && (
-          <ul className="absolute left-0 right-0 w-full bg-white border border-gray-200 rounded shadow z-50 max-h-60 overflow-y-auto mt-1">
+          <ul 
+            id="search-suggestions"
+            className="absolute left-0 right-0 w-full bg-white border border-gray-200 rounded shadow z-50 max-h-60 overflow-y-auto mt-1"
+            role="listbox"
+          >
             {suggestions.map((s, i) => (
               <li
                 key={i}
                 className="px-4 py-2 text-gray-800 font-medium hover:bg-gray-100 cursor-pointer truncate"
                 onClick={() => setFilters((prev) => ({ ...prev, query: s }))}
+                role="option"
+                aria-selected={false}
               >
                 {s}
               </li>
@@ -314,19 +332,27 @@ const SearchBar: React.FC = () => {
         )}
       </div>
       {/* View mode toggle */}
-      <div className="flex justify-end mb-2 gap-2">
-        <div className="flex items-center bg-gray-100 rounded-full px-1 py-1 border w-fit">
+      <div className="flex items-center justify-between mb-4">
+        <div 
+          className="flex items-center bg-gray-100 rounded-full px-1 py-1 border w-fit"
+          role="radiogroup"
+          aria-label="View mode"
+        >
           <button
             className={`px-4 py-1 rounded-full font-semibold transition-colors duration-200 ${viewMode === 'card' ? 'bg-blue-600 text-white shadow' : 'text-gray-700'}`}
             onClick={() => setViewMode('card')}
-            aria-pressed={viewMode === 'card'}
+            role="radio"
+            aria-checked={viewMode === 'card'}
+            aria-label="Meet Your Match view"
           >
             Meet Your Match
           </button>
           <button
             className={`px-4 py-1 rounded-full font-semibold transition-colors duration-200 ${viewMode === 'grid' ? 'bg-blue-600 text-white shadow' : 'text-gray-700'}`}
             onClick={() => setViewMode('grid')}
-            aria-pressed={viewMode === 'grid'}
+            role="radio"
+            aria-checked={viewMode === 'grid'}
+            aria-label="See the Crowd view"
           >
             See the Crowd
           </button>
@@ -334,19 +360,20 @@ const SearchBar: React.FC = () => {
         <button
           className="px-3 py-1 rounded border bg-green-100 text-green-700 hover:bg-green-200 font-semibold"
           onClick={() => setShowSaved(true)}
+          aria-label={`View saved products (${saved.length} items)`}
         >
           Saved ({saved.length})
         </button>
       </div>
       {/* Results area: Card or Grid */}
       {viewMode === 'card' ? (
-        <div className="flex flex-col items-center min-h-[400px]">
+        <div className="flex flex-col items-center min-h-[400px]" role="region" aria-label="Product matches">
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Loading...</div>
+            <div className="text-center py-8 text-gray-500" role="status">Loading...</div>
           ) : error ? (
-            <div className="text-center py-8 text-red-500">{error}</div>
+            <div className="text-center py-8 text-red-500" role="alert">{error}</div>
           ) : results.length === 0 ? (
-            <div className="text-center py-8 text-gray-400">No results found.</div>
+            <div className="text-center py-8 text-gray-400" role="status">No results found.</div>
           ) : currentIdx < results.length ? (
             <SwipeableProductCard
               product={results[currentIdx]}
@@ -354,17 +381,18 @@ const SearchBar: React.FC = () => {
               onSkip={handleSkip}
             />
           ) : (
-            <div className="text-center py-8 text-green-600 font-semibold">No more matches! 🎉</div>
+            <div className="text-center py-8 text-green-600 font-semibold" role="status">No more matches! 🎉</div>
           )}
           {/* Progress indicator and start over */}
           <div className="mt-4 flex items-center gap-4">
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-gray-600" role="status">
               {Math.min(currentIdx + 1, results.length)} of {results.length} matches
             </span>
             <button
               className="px-3 py-1 rounded border bg-gray-100 text-gray-700 hover:bg-gray-200"
               onClick={() => setCurrentIdx(0)}
               disabled={results.length === 0}
+              aria-label="Start over with matches"
             >
               Start Over
             </button>
